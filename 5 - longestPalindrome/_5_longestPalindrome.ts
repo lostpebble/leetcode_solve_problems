@@ -3,17 +3,24 @@ export function longestPalindrome(s: string): string {
   let minSearchLength = 1;
 
   for (let i = 0; i < s.length; i++) {
+    if (s.length - i <= longest.length) {
+      break;
+    }
+
     for (let j = minSearchLength; j < s.length - i; j++) {
-      if (Math.floor(longest.length / 2) > minSearchLength) {
+      if (j < minSearchLength) {
         continue;
       }
 
-      // i = 0; j = 1
-      const straddleIndex = i + j - 1; // 0
+      const straddleIndex = i + j - 1;
+
+      if (s.length - i <= straddleIndex + minSearchLength) {
+        break;
+      }
+
       let straddleFailed = false;
       let mirrorFailed = false;
 
-      // j = 1
       for (let ii = 1; ii <= j; ii++) {
         if (!straddleFailed) {
           if (
