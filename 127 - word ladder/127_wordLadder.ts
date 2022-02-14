@@ -1,4 +1,8 @@
-export function ladderLength(beginWord: string, endWord: string, wordList: string[]): number {
+export function ladderLength(
+  beginWord: string,
+  endWord: string,
+  wordList: string[]
+): number {
   const wordSet = new Set(wordList);
 
   if (!wordSet.has(endWord)) {
@@ -7,18 +11,18 @@ export function ladderLength(beginWord: string, endWord: string, wordList: strin
 
   const wordLength = beginWord.length;
 
-  const wordLinkHash: {
-    [wordWithGap: string]: Set<string>;
+  const wordStepIndex: {
+    [wordWithGap: string]: string[];
   } = {};
 
   for (const word of wordList) {
     for (let i = 0; i < wordLength; i += 1) {
       const wordWithGap = word.slice(0, i) + "_" + word.slice(i + 1);
-      if (!wordLinkHash.hasOwnProperty(wordWithGap)) {
-        wordLinkHash[wordWithGap] = new Set<string>();
+      if (!wordStepIndex.hasOwnProperty(wordWithGap)) {
+        wordStepIndex[wordWithGap] = [];
       }
 
-      wordLinkHash[wordWithGap].add(word);
+      wordStepIndex[wordWithGap].push(word);
     }
   }
 
@@ -31,6 +35,19 @@ export function ladderLength(beginWord: string, endWord: string, wordList: strin
     for (let word of queue) {
       if (word === endWord) {
         return steps;
+      }
+
+      for (let i = 0; i < wordLength; i += 1) {
+        const wordWithGap = word.slice(0, i) + "_" + word.slice(i + 1);
+
+        if (wordStepIndex.hasOwnProperty(wordWithGap)) {
+          for (const w of wordStepIndex[wordWithGap]) {
+            if (wordSet.has(w)) {
+              wordSet.delete(w);
+              next.push(w);
+            }
+          }
+        }
       }
     }
 
